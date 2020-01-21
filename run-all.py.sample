@@ -1,0 +1,24 @@
+ #! /usr/bin/env python3
+ 
+ import os
+ import signal
+ import subprocess
+ import sys
+ 
+ SPECS = [
+     { "pwd": "hurdle", "exe": ["supervisor", "index.js"] },
+     { "pwd": "root",  "exe": ["go run", "main.go"]}
+ ]
+ 
+ for spec in SPECS:
+     exe = spec['exe']
+     cwd = spec['pwd']
+     abs_cwd = os.path.abspath(cwd)
+     proc = subprocess.Popen(exe, cwd=abs_cwd)
+ 
+ def on_sigint(signal, frame):
+     sys.exit(0)
+ 
+ signal.signal(signal.SIGINT, on_sigint)
+ 
+ signal.pause()

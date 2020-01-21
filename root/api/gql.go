@@ -1,4 +1,4 @@
-package gql
+package api
 
 import (
 	"fmt"

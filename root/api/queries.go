@@ -1,7 +1,7 @@
-package gql
+package api
 
 import (
-	"github.com/codespawner-api/postgres"
+	"github.com/codespawner-api/root/models"
 	"github.com/graphql-go/graphql"
 )
 
@@ -11,7 +11,7 @@ type Root struct {
 }
 
 // NewRoot returns base query type. This is where we add all the base queries
-func NewRoot(db *postgres.Db) *Root {
+func NewRoot(db *models.Db) *Root {
 	// Create a resolver holding our databse. Resolver can be found in resolvers.go
 	resolver := Resolver{db: db}
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/codespawner-api/gql"
+	"github.com/codespawner-api/root/api"
 	"github.com/go-chi/render"
 	"github.com/graphql-go/graphql"
 )
@@ -35,7 +35,7 @@ func (s *Server) GraphQL() http.HandlerFunc {
 		}
 
 		// Execute graphql query
-		result := gql.ExecuteQuery(rBody.Query, *s.GqlSchema)
+		result := api.ExecuteQuery(rBody.Query, *s.GqlSchema)
 
 		// render.JSON comes from the chi/render package and handles
 		// marshalling to json, automatically escaping HTML and setting

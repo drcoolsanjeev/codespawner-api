@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/codespawner-api/gql"
-	"github.com/codespawner-api/postgres"
-	"github.com/codespawner-api/server"
+	"github.com/codespawner-api/root/api"
+	"github.com/codespawner-api/root/models"
+	"github.com/codespawner-api/root/server"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
@@ -17,24 +17,25 @@ import (
 func main() {
 	router, db := initializeAPI()
 	defer db.Close()
-	fmt.Println("Serving CodecampAPI on: 1401")
+	fmt.Println("Serving Root on: 1401")
+	
 	log.Fatal(http.ListenAndServe(":1401", router))
 }
 
-func initializeAPI() (*chi.Mux, *postgres.Db) {
+func initializeAPI() (*chi.Mux, *models.Db) {
 	// Create a new router
 	router := chi.NewRouter()
 
 	// Create a new connection to our pg database
-	db, err := postgres.New(
-		postgres.ConnString("localhost", 5432, "iamsaquib", "90627", "codespawner"),
+	db, err := models.New(
+		models.ConnString("localhost", 5432, "iamsaquib", "90627", "codespawner"),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Create our root query for graphql
-	rootQuery := gql.NewRoot(db)
+	rootQuery := api.NewRoot(db)
 	// Create a new graphql schema, passing in the the root query
 	sc, err := graphql.NewSchema(
 		graphql.SchemaConfig{Query: rootQuery.Query},
