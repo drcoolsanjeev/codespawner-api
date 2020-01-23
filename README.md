@@ -18,4 +18,4 @@ Work in Progress, rewriting the whole API again
 
 5. Finally Run **run-all.py**.
 
-**P.S- Make sure you have Nginx and Python3 Installed**
+**P.S- Readlly interested join us over at** [https://discord.gg/NySVa7A](Discord TheCodeSpawners) **to walk the talk!**
