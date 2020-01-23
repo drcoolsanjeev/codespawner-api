@@ -18,4 +18,4 @@ Work in Progress, rewriting the whole API again
 
 5. Finally Run **run-all.py**.
 
-**P.S- Readlly interested join us over at** [https://discord.gg/NySVa7A](Discord TheCodeSpawners) **to walk the talk!**
+**P.S- Readlly interested join us over at** [Discord TheCodeSpawners](https://discord.gg/NySVa7A) **to walk the talk!**
