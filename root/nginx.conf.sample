@@ -1,16 +1,13 @@
-upstream codecampapi {
+upstream codespawner-api {
   server 127.0.0.1:1401;
 }
 
 server {
   listen              80;
-  #listen              443 ssl;
-  server_name         codecampapi.local www.codecampapi.local;
+  #listen             443 ssl;
+  server_name         codespawner-api.local www.codespawner-api.local;
 
-  #ssl_certificate     /var/www/distill.io/web/root/ssl/broadcast.distill.io.crt;
-  #ssl_certificate_key /var/www/distill.io/web/root/ssl/broadcast.distill.io.key;
-
-  access_log          /var/log/nginx/codecampapi.log;
+  access_log          /var/log/nginx/codespawner-api.log;
   
   location / {
     proxy_read_timeout        7200;
@@ -27,7 +24,7 @@ server {
     proxy_set_header  Host $http_host;
     proxy_set_header  X-NginX-Proxy true;
 
-    proxy_pass        http://codecampapi/;
+    proxy_pass        http://codespawner-api/;
     proxy_redirect    off;
   }
 

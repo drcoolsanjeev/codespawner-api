@@ -6,7 +6,7 @@ for dir in code-runner hurdle root; do
 
   if [ ! -f conf.json ]; then
     echo "Created conf.json..."
-    cp conf.json.sample conf.json
+    cp config/conf.json.sample config/conf.json
   fi
 
   if [ -f nginx.conf.sample ] && [ ! -f nginx.conf ]; then
@@ -18,4 +18,3 @@ for dir in code-runner hurdle root; do
 done
 
 cp run-all.py.sample run-all.py
-cd static/web/scripts && npm i && cd -

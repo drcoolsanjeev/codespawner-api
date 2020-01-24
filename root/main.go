@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	json "encoding/json"
 
 	"github.com/codespawner-api/root/api"
 	"github.com/codespawner-api/root/models"
@@ -14,21 +16,56 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-func main() {
-	router, db := initializeAPI()
-	defer db.Close()
-	fmt.Println("Serving Root on: 1401")
-	
-	log.Fatal(http.ListenAndServe(":1401", router))
+type Config struct {
+	Database struct {
+		Host		string	`json:"host"`
+		Port 		string	`json:"port"`
+		Username	string	`json:"username"`
+		Password	string	`json:"password"`
+		Dbname		string	`json:"dbname"`
+	} `json:"database"`
+	Port	string	`json:"port"`	
 }
 
-func initializeAPI() (*chi.Mux, *models.Db) {
+func LoadConfiguration(filename string) (Config, error) {
+	var config Config
+	configFile, err := os.Open(filename)
+	defer configFile.Close()
+	if err != nil {
+		return config, err
+	}
+	jsonParser := json.NewDecoder(configFile)
+	err = jsonParser.Decode(&config)
+	return config, err
+}
+
+func main() {
+	var config Config
+	config, err := LoadConfiguration("config/conf.json")
+	if err != nil {
+		fmt.Println("%v", err)
+	}
+	router, db := initializeAPI(config)
+	defer db.Close()
+
+	fmt.Println("Serving Root on: 1401")
+	
+	log.Fatal(http.ListenAndServe(":" + config.Port, router))
+}
+
+func initializeAPI(config Config) (*chi.Mux, *models.Db) {
 	// Create a new router
 	router := chi.NewRouter()
 
 	// Create a new connection to our pg database
 	db, err := models.New(
-		models.ConnString("localhost", 5432, "iamsaquib", "90627", "codespawner"),
+		models.ConnString(
+			config.Database.Host,
+			config.Database.Port,
+			config.Database.Username,
+			config.Database.Password,
+			config.Database.Dbname,
+		),
 	)
 	if err != nil {
 		log.Fatal(err)
