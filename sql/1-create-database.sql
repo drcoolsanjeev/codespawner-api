@@ -11,6 +11,6 @@ BEGIN;
         password TEXT,
         ts_mod TIMESTAMPTZ DEFAULT now(),
         credit INTEGER DEFAULT 0,
-        state SMALLINT DEFAULT 0,
+        state SMALLINT DEFAULT 0
     );
 COMMIT;
