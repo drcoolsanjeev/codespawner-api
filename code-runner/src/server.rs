@@ -2,7 +2,7 @@ use tonic::{transport::Server, Request, Response, Status};
 
 use runner::code_runner_server::{CodeRunner, CodeRunnerServer};
 use runner::{HelloReply, HelloRequest};
-
+use diesel::prelude::*;
 pub mod runner {
     tonic::include_proto!("runner");
 }
