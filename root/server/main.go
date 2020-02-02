@@ -9,8 +9,12 @@ import (
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/codespawner-api/root/graphql"
+	customMiddleware "github.com/codespawner-api/root/middleware"
 	"github.com/codespawner-api/root/postgres"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-pg/pg/v9"
+	"github.com/rs/cors"
 )
 
 type Config struct {
@@ -48,6 +52,18 @@ func main() {
 	if port == "" {
 		port = config.Port
 	}
+
+	router := chi.NewRouter()
+
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"http:localhost:1401"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
+
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(customMiddleware.AuthMiddleware())
 	// DB Config
 	DB := postgres.New(&pg.Options{
 		User:     config.Database.Username,
@@ -64,6 +80,6 @@ func main() {
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
 	http.Handle("/query", handler.GraphQL(graphql.NewExecutableSchema(c)))
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", config.Port)
+	log.Printf("connect to https://localhost:%s/ for GraphQL playground", config.Port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
