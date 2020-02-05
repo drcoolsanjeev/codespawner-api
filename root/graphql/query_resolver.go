@@ -12,6 +12,6 @@ func (r *Resolver) Query() QueryResolver {
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) User(ctx context.Context) ([]*models.User, error) {
-	return r.UsersRepo.GetUsers()
+func (r *queryResolver) User(ctx context.Context, id string) (*models.User, error) {
+	return r.UsersRepo.GetUserByID(id)
 }

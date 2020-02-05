@@ -130,7 +130,4 @@ func main() {
 	srv.Shutdown(ctx)
 	log.Println("shutting down")
 	os.Exit(0)
-	// log.Printf("connect to https://localhost:%s/ for GraphQL playground", config.Port)
-	// log.Fatal(http.ListenAndServe(":"+port, nil))
-
 }

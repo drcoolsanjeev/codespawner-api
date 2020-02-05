@@ -6,13 +6,20 @@ type User {
 }
 
 type Query {
-    user: [User]!
+    user(id: ID!): User! 
 }
 
 input NewUser {
     name: String!
     email: String!
     password: String!
+}
+
+input RegisterInput {
+    name: String!
+    email: String!
+    password: String!
+    confirmPassword: String!
 }
 
 type Mutation {
