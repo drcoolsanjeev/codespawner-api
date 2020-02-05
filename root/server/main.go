@@ -8,10 +8,13 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/handler"
-	"github.com/go-pg/pg/v9"
-
-	"github.com/codespawner-api/root"
+	"github.com/codespawner-api/root/graphql"
+	customMiddleware "github.com/codespawner-api/root/middleware"
 	"github.com/codespawner-api/root/postgres"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-pg/pg/v9"
+	"github.com/rs/cors"
 )
 
 type Config struct {
@@ -49,21 +52,34 @@ func main() {
 	if port == "" {
 		port = config.Port
 	}
+
+	router := chi.NewRouter()
+
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins:   []string{"http:localhost:1401"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
+
+	router.Use(middleware.RequestID)
+	router.Use(middleware.Logger)
+	router.Use(customMiddleware.AuthMiddleware())
 	// DB Config
 	DB := postgres.New(&pg.Options{
 		User:     config.Database.Username,
 		Password: config.Database.Password,
 		Database: config.Database.Dbname,
 	})
+	fmt.Print(DB)
 	defer DB.Close()
 
 	DB.AddQueryHook(postgres.DBLogger{})
-	c := root.Config{Resolvers: &root.Resolver{
+	c := graphql.Config{Resolvers: &graphql.Resolver{
 		UsersRepo: postgres.UserRepo{DB: DB},
 	}}
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
-	http.Handle("/query", handler.GraphQL(root.NewExecutableSchema(c)))
+	http.Handle("/query", handler.GraphQL(graphql.NewExecutableSchema(c)))
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Printf("connect to https://localhost:%s/ for GraphQL playground", config.Port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
