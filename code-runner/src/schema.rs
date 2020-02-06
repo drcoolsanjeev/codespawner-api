@@ -1,8 +1,11 @@
-table!  {
+table! {
     users_code (id) {
-        id -> String,
-        user_id -> String,
-        code_buffer -> String,
-        input_buffer -> String,
+        id -> Uuid,
+        user_id -> Nullable<Uuid>,
+        code_buffer -> Text,
+        input_buffer -> Nullable<Text>,
+        ts -> Nullable<Timestamptz>,
+        ts_mod -> Nullable<Timestamptz>,
     }
 }
+

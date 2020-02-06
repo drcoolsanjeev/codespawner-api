@@ -55,10 +55,10 @@ pub fn create_user_code(
     input_buffer: &str) -> UsersCode {
     use schema::users_code;
 
-    let new_code = UsersCode {
-        user_id: user_id.to_string(),
-        code_buffer: code_buffer.to_string(),
-        input_buffer: input_buffer.to_string(),
+    let new_code = NewCode {
+        user_id: user_id,
+        code_buffer: code_buffer,
+        input_buffer: input_buffer,
     };
 
     diesel::insert_into(users_code::table)
@@ -68,10 +68,23 @@ pub fn create_user_code(
 }
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+    use self::schema::users_code::dsl::*;
+
     let addr = "[::1]:1405".parse().unwrap();
     let code_runner = MyRunner::default();
 
     let connection = establish_connection();
+    let results = users_code
+        .select((id, user_id, code_buffer, input_buffer, ts, ts_mod))
+        .get_result::<UsersCode>(&connection)
+        .expect("Error loading posts");
+
+    // println!("Displaying {:?} posts", results);
+    // for post in results {
+    //     println!("-----------\n");
+    //     println!("{}", post.code_buffer);
+    // }
     println!("Runner Server listening on {}", addr);
 
     Server::builder()
