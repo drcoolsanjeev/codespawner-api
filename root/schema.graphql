@@ -36,6 +36,12 @@ input RegisterInput {
   confirmPassword: String!
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   register(input: RegisterInput!): AuthResponse! 
+  login(input: LoginInput!): AuthResponse!
 }

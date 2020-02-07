@@ -14,15 +14,25 @@ func (r *Resolver) Mutation() MutationResolver {
 
 type mutationResolver struct{ *Resolver }
 
-// func (r *mutationResolver) CreateUser(ctx context.Context, input NewUser) (*models.User, error) {
+func (r *mutationResolver) Login(ctx context.Context, input models.LoginInput) (*models.AuthResponse, error) {
+	user, err := r.UsersRepo.GetUserByEmail(input.Email)
+	if err != nil {
+		return nil, err
+	}
 
-// 	user := &models.User{
-// 		Name:  input.Name,
-// 		Email: input.Email,
-// 	}
-
-// 	return r.UsersRepo.CreateUser(user)
-// }
+	err = user.ComparePassword(input.Password)
+	if err != nil {
+		return nil, err
+	}
+	token, err := user.GenToken()
+	if err != nil {
+		return nil, err
+	}
+	return &models.AuthResponse{
+		AuthToken: token,
+		User:      user,
+	}, nil
+}
 
 func (r *mutationResolver) Register(ctx context.Context, input models.RegisterInput) (*models.AuthResponse, error) {
 	_, err := r.UsersRepo.GetUserByEmail(input.Email)
