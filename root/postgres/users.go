@@ -13,8 +13,8 @@ type UserRepo struct {
 }
 
 // CreateUser to create users
-func (u *UserRepo) CreateUser(user *models.User) (*models.User, error) {
-	_, err := u.DB.Model(user).Returning("*").Insert()
+func (u *UserRepo) CreateUser(tx *pg.Tx, user *models.User) (*models.User, error) {
+	_, err := tx.Model(user).Returning("*").Insert()
 	return user, err
 }
 
@@ -26,4 +26,8 @@ func (u *UserRepo) GetUserByField(field, value string) (*models.User, error) {
 
 func (u *UserRepo) GetUserByID(id string) (*models.User, error) {
 	return u.GetUserByField("id", id)
+}
+
+func (u *UserRepo) GetUserByEmail(email string) (*models.User, error) {
+	return u.GetUserByField("email", email)
 }

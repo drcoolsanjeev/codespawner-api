@@ -1,0 +1,31 @@
+upstream codespawner-api {
+  server 127.0.0.1:1405;
+}
+
+server {
+  listen              80;
+  server_name         code-runner.local;
+
+  access_log          /var/log/nginx/code-runner.log;
+  
+  location / {
+    proxy_read_timeout        7200;
+    proxy_buffering           off;
+    proxy_cache               off;
+    proxy_http_version        1.1;
+    chunked_transfer_encoding  off;
+
+    proxy_set_header          Connection '';
+
+    proxy_set_header  X-Real_IP $remote_addr;
+    proxy_set_header  X-Scheme $scheme;
+    proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header  Host $http_host;
+    proxy_set_header  X-NginX-Proxy true;
+
+    proxy_pass        http://code-runner/;
+    proxy_redirect    off;
+  }
+
+}
+

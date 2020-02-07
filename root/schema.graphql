@@ -1,27 +1,41 @@
+scalar Time
+
+type AuthToken {
+  accessToken: String!
+  expiredAt: Time!
+}
+
+type AuthResponse {
+  authToken: AuthToken!
+  user: User!
+}
+
 type User {
-    id: ID!
-    name: String!
-    email: String!
-    type: Int!
+  id: ID!
+  name: String!
+  email: String!
+  type: Int!
+  ts: Time!
+  ts_mod: Time!
 }
 
 type Query {
-    user(id: ID!): User! 
+  user(id: ID!): User! 
 }
 
 input NewUser {
-    name: String!
-    email: String!
-    password: String!
+  name: String!
+  email: String!
+  password: String!
 }
 
 input RegisterInput {
-    name: String!
-    email: String!
-    password: String!
-    confirmPassword: String!
+  name: String!
+  email: String!
+  password: String!
+  confirmPassword: String!
 }
 
 type Mutation {
-    createUser(input: NewUser!): User!
+  register(input: RegisterInput!): AuthResponse! 
 }
