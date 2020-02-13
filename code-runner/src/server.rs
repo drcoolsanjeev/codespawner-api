@@ -75,7 +75,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let code_runner = MyRunner::default();
 
     let connection = establish_connection();
-    let results = users_code
+    let results = users_code    
         .select((id, user_id, code_buffer, input_buffer, ts, ts_mod))
         .get_result::<UsersCode>(&connection)
         .expect("Error loading posts");
