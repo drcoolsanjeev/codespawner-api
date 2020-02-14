@@ -15,7 +15,7 @@ use std::env;
 pub mod schema;
 pub mod models;
 
-use self::models::{UsersCode, NewCode};
+use self::models::UsersCode;
 
 pub mod runner {
     tonic::include_proto!("runner");
@@ -48,24 +48,6 @@ pub fn establish_connection() -> PgConnection {
         .expect(&format!("Error connecting to {}", database_url))
 }
 
-pub fn create_user_code(
-    conn: &PgConnection,
-    user_id: &str,
-    code_buffer: &str,
-    input_buffer: &str) -> UsersCode {
-    use schema::users_code;
-
-    let new_code = NewCode {
-        user_id: user_id,
-        code_buffer: code_buffer,
-        input_buffer: input_buffer,
-    };
-
-    diesel::insert_into(users_code::table)
-        .values(&new_code)
-        .get_result(conn)
-        .expect("Error saving new code")
-}
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
@@ -76,8 +58,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let connection = establish_connection();
     let results = users_code    
-        .select((id, user_id, code_buffer, input_buffer, ts, ts_mod))
-        .get_result::<UsersCode>(&connection)
+        .load::<UsersCode>(&connection)
         .expect("Error loading posts");
 
     // println!("Displaying {:?} posts", results);
