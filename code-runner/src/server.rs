@@ -62,10 +62,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .expect("Error loading posts");
 
     // println!("Displaying {:?} posts", results);
-    // for post in results {
-    //     println!("-----------\n");
-    //     println!("{}", post.code_buffer);
-    // }
+    for post in results {
+        println!("-----------\n");
+        println!("{}", post.code_buffer);
+    }
     println!("Runner Server listening on {}", addr);
 
     Server::builder()
